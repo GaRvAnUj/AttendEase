@@ -71,18 +71,6 @@ Create an optimized production build:
 npm run build
 ```
 
-## ☁️ Deployment on AWS
-
-### AWS Amplify (Recommended)
-1. Connect your GitHub repository to **AWS Amplify Hosting**.
-2. Amplify will automatically detect the Vite build settings.
-3. Deploy and enjoy continuous integration!
-
-### S3 + CloudFront
-1. Build the project: `npm run build`.
-2. Upload the `dist/` directory contents to an S3 bucket configured for static website hosting.
-3. Set up **Amazon CloudFront** for SSL and handle Single Page Application (SPA) routing (404 redirects to `index.html`).
-
 ## � Project Structure
 ```
 src/
