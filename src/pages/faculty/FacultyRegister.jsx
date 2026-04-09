@@ -4,6 +4,7 @@ import { motion } from "framer-motion";
 import { Users, ArrowRight, Save } from "lucide-react";
 import toast from "react-hot-toast";
 import { registerFaculty } from "../../api/api";
+import PasswordInput from "../../components/PasswordInput";
 
 export default function FacultyRegister() {
   const [form, setForm] = useState({
@@ -155,12 +156,11 @@ export default function FacultyRegister() {
             </div>
             <div className="form-group">
               <label className="form-label">Password *</label>
-              <input
-                type="password"
-                className="form-input"
+              <PasswordInput
                 value={form.password}
                 onChange={(e) => update("password", e.target.value)}
                 placeholder="••••••••"
+                autoComplete="new-password"
               />
             </div>
           </div>

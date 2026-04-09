@@ -4,6 +4,7 @@ import { motion } from "framer-motion";
 import { GraduationCap, ArrowRight } from "lucide-react";
 import toast from "react-hot-toast";
 import { loginStudent } from "../../api/api";
+import PasswordInput from "../../components/PasswordInput";
 
 export default function StudentLogin() {
   const [studentId, setStudentId] = useState("");
@@ -61,12 +62,11 @@ export default function StudentLogin() {
 
           <div className="form-group">
             <label className="form-label">Password</label>
-            <input
-              type="password"
-              className="form-input"
+            <PasswordInput
               value={password}
               onChange={(e) => setPassword(e.target.value)}
               placeholder="••••••••"
+              autoComplete="current-password"
             />
           </div>
 

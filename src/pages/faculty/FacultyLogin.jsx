@@ -4,6 +4,7 @@ import { motion } from "framer-motion";
 import { Users, ArrowRight, IdCard, Lock } from "lucide-react";
 import toast from "react-hot-toast";
 import { loginFaculty } from "../../api/api";
+import PasswordInput from "../../components/PasswordInput";
 
 export default function FacultyLogin() {
   const [facultyId, setFacultyId] = useState("");
@@ -25,7 +26,9 @@ export default function FacultyLogin() {
     setLoading(true);
     try {
       const data = await loginFaculty(facultyId.trim(), password);
-      // Store facultyId in session
+      // Preserve the legacy key while also storing the actual facultyId
+      // expected by other faculty pages and API calls.
+      sessionStorage.setItem("facultyId", data.facultyId);
       sessionStorage.setItem("facultyName", data.facultyId);
       toast.success("Welcome, " + data.facultyId + "!");
       navigate("/faculty/dashboard");
@@ -81,12 +84,11 @@ export default function FacultyLogin() {
                 <Lock size={13} /> Password
               </span>
             </label>
-            <input
-              type="password"
-              className="form-input"
+            <PasswordInput
               placeholder="Enter your password"
               value={password}
               onChange={(e) => setPassword(e.target.value)}
+              autoComplete="current-password"
             />
           </div>
 

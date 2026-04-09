@@ -1,10 +1,12 @@
 import { useState, useEffect } from "react";
+import { useNavigate } from "react-router-dom";
 import { motion } from "framer-motion";
-import { Calendar, Plus, Clock, Save, Trash2 } from "lucide-react";
+import { Calendar, Plus, Clock, Save } from "lucide-react";
 import toast from "react-hot-toast";
 import { getTimetable, addTimetableEntry } from "../../api/api";
 
 export default function Timetable() {
+  const navigate = useNavigate();
   const [timetable, setTimetable] = useState([]);
   const [loading, setLoading] = useState(true);
   const [adding, setAdding] = useState(false);
@@ -17,11 +19,18 @@ export default function Timetable() {
     year: "",
   });
 
-  const facultyId = sessionStorage.getItem("facultyId");
+  const facultyId =
+    sessionStorage.getItem("facultyId") || sessionStorage.getItem("facultyName");
 
   useEffect(() => {
+    if (!facultyId) {
+      setLoading(false);
+      toast.error("Please sign in again to view your timetable.");
+      navigate("/faculty/login");
+      return;
+    }
     fetchTimetable();
-  }, []);
+  }, [facultyId, navigate]);
 
   async function fetchTimetable() {
     try {
@@ -38,6 +47,11 @@ export default function Timetable() {
 
   async function handleAddEntry(e) {
     e.preventDefault();
+    if (!facultyId) {
+      toast.error("Please sign in again before updating the timetable.");
+      navigate("/faculty/login");
+      return;
+    }
     if (!newEntry.courseId || !newEntry.startTime || !newEntry.endTime || !newEntry.department || !newEntry.year) {
       toast.error("Please fill all fields");
       return;
