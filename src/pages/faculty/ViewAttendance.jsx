@@ -16,12 +16,30 @@ import {
 import toast from "react-hot-toast";
 import { getAttendance, modifyAttendance } from "../../api/api";
 
+function getISTDateInputValue() {
+  const parts = new Intl.DateTimeFormat("en-GB", {
+    timeZone: "Asia/Kolkata",
+    year: "numeric",
+    month: "2-digit",
+    day: "2-digit",
+  }).formatToParts(new Date());
+
+  const map = {};
+  for (const part of parts) {
+    if (part.type !== "literal") {
+      map[part.type] = part.value;
+    }
+  }
+
+  return `${map.year}-${map.month}-${map.day}`;
+}
+
 export default function ViewAttendance() {
   const navigate = useNavigate();
   const facultyName = sessionStorage.getItem("facultyName");
 
   const [courseId, setCourseId] = useState("");
-  const [date, setDate] = useState(new Date().toISOString().split("T")[0]);
+  const [date, setDate] = useState(() => getISTDateInputValue());
   const [records, setRecords] = useState([]);
   const [loading, setLoading] = useState(false);
   const [fetched, setFetched] = useState(false);
@@ -36,7 +54,9 @@ export default function ViewAttendance() {
 
   async function handleFetch(e) {
     if (e) e.preventDefault();
-    if (!courseId.trim()) {
+    const normalizedCourseId = courseId.trim().toUpperCase();
+
+    if (!normalizedCourseId) {
       toast.error("Please enter a Course ID");
       return;
     }
@@ -47,7 +67,7 @@ export default function ViewAttendance() {
 
     setLoading(true);
     try {
-      const data = await getAttendance({ courseId: courseId.trim(), date });
+      const data = await getAttendance({ courseId: normalizedCourseId, date });
       setRecords(data);
       setFetched(true);
       toast.success(`Found ${data.length} student(s)`);
@@ -63,7 +83,7 @@ export default function ViewAttendance() {
     try {
       await modifyAttendance({
         studentId,
-        courseId: courseId.trim(),
+        courseId: courseId.trim().toUpperCase(),
         date,
         action,
       });
@@ -144,7 +164,7 @@ export default function ViewAttendance() {
                 className="form-input"
                 placeholder="e.g. CS101"
                 value={courseId}
-                onChange={(e) => setCourseId(e.target.value)}
+                onChange={(e) => setCourseId(e.target.value.toUpperCase())}
               />
             </div>
             <div className="form-group">
