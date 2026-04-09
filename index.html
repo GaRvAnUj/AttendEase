@@ -10,6 +10,12 @@
     <script>
       (function() {
         try {
+          var pendingRoute = sessionStorage.getItem('spa-redirect-path');
+          if (pendingRoute) {
+            sessionStorage.removeItem('spa-redirect-path');
+            window.history.replaceState(null, '', pendingRoute);
+          }
+
           var theme = localStorage.getItem('theme') || 'light';
           document.documentElement.setAttribute('data-theme', theme);
         } catch (e) {}
